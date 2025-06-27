@@ -30,10 +30,22 @@ class GlobalVar:
     @classmethod
     def switch_driver(cls, driver_role):
         if cls.driver_map.get(driver_role, None) is not None:
-            cls.driver.minimize_window()
+            try:
+                cls.driver.minimize_window()
+            except Exception as e:
+                print(f"警告：并不能将当前启动最小号 {e}")
             cls.driver = cls.driver_map.get(driver_role, None)
             time.sleep(1)
             cls.driver.maximize_window()
+
+    @classmethod
+    def cleanup_single_driver(cls, driver_role):
+        try:
+            driver = cls.driver_map.pop(driver_role, None)
+            if driver:
+                driver.quit()
+        except Exception as e:
+            print(f"退出驱动失败:{driver_role},{e}")
 
     @classmethod
     def cleanup_driver(cls):
