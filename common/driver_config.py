@@ -8,6 +8,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.driver_cache import DriverCacheManager
 
 from utils.file_utils import get_current_project_path
+from utils.log_manager import LogManager
+
+logger = LogManager()
 
 
 class DriverConfig:
@@ -50,7 +53,7 @@ class DriverConfig:
                         driver = webdriver.Chrome(service=service, options=self.default_chrome_options(options, debugger))
         except Exception as e:
             # 如果本地驱动查找或启动失败，则自动下载符合版本的驱动
-            print(e)
+            logger.error(f"本地驱动启动浏览器失败 {e}")
             service = ChromeService(self.safe_chromedriver_install())
             driver = webdriver.Chrome(service=service, options=self.default_chrome_options(options, debugger))
         driver.delete_all_cookies()

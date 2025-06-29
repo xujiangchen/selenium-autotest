@@ -9,6 +9,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from common.global_var import GlobalVar
+from utils.log_manager import LogManager
+
+logger = LogManager()
 
 
 class BrowserOperator:
@@ -159,7 +162,7 @@ class BrowserOperator:
         except TimeoutException:
             return False
         except Exception as e:
-            print(f"查找元素时发生错误: {str(e)}")
+            logger.error(f"查找元素时发生错误: {str(e)}")
             return False
 
     def element_wait_for_not_display(self, web_element: tuple, timeout=20):
@@ -176,7 +179,7 @@ class BrowserOperator:
         except TimeoutException:
             return False
         except Exception as e:
-            print(f"查找元素时发生错误: {str(e)}")
+            logger.error(f"查找元素时发生错误: {str(e)}")
             return False
 
     def element_click(self, web_element: tuple, timeout=20):
@@ -193,7 +196,7 @@ class BrowserOperator:
             element.click()
         except Exception as e:
             time.sleep(1)
-            print(f"点击元素时发生错误: {str(e)}")
+            logger.error(f"点击元素时发生错误， 进行重试: {str(e)}")
             element = self.element_get(web_element=web_element, timeout=timeout)
             try:
                 element.click()
@@ -259,7 +262,7 @@ class BrowserOperator:
                 if hasattr(Keys, key):
                     key = getattr(Keys, key)  # 转换为 Keys 枚举（如 Keys.ENTER）
                 else:
-                    print(f"'{key}'不是标准的按键常量，将作为字符串发送")
+                    logger.error(f"'{key}'不是标准的按键常量，将作为字符串发送")
             element.send_keys(key)
         except Exception as e:
             raise AssertionError(f"元素{web_element}触发时报错: {str(e)}")
@@ -282,7 +285,7 @@ class BrowserOperator:
                 time.sleep(0.5)
                 continue
         # 部分情况下没有指定的attribute也是一种期望的结果，表明前段元素处于正确的状态
-        print(f"{web_element} 没有发现指定的 {attribute}")
+        logger.error(f"{web_element} 没有发现指定的 {attribute}")
         return None
 
     def element_upload(self, web_element: tuple, file_path: str, timeout: int = 20):
