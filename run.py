@@ -33,6 +33,11 @@ def parse_args():
         help="Test environment (e.g., 'dev', 'staging')",
         default="dev"
     )
+    parser.add_argument(
+        "-b", "--browser",
+        help="What browser to use",
+        default="Chrome"
+    )
     # 指定allure 报告的位置，默认为项目根目录
     parser.add_argument(
         "--allure",
@@ -74,6 +79,9 @@ def run_pytest(args):
     # 设置环境变量（case可以通过 conftest.py 或 pytest_configure 读取）
     os.environ["TEST_ENV"] = args.env
 
+    # 设置浏览器类型
+    os.environ["TEST_BROWSER"] = args.browser
+
     # 执行命令
     logger.info(f"🚀 Running pytest with command: {' '.join(cmd)}")
     result = subprocess.run(cmd, cwd=BASE_DIR)
@@ -113,7 +121,7 @@ def main():
         generate_reports(args)
         sys.exit(0)
     else:
-        print("❌ Tests failed!")
+        logger.error("❌ Tests failed!")
         sys.exit(1)
 
 

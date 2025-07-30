@@ -15,6 +15,18 @@ logger = LogManager()
 
 class DriverConfig:
 
+    def init_driver(self, browser_type="Chrome", debugger=None):
+        driver = None
+        if browser_type.lower() == "chrome":
+            driver = self.chrome_driver_config(debugger)
+        elif browser_type.lower() == "firefox":
+            # TODO
+            pass
+        elif browser_type.lower() == "edge":
+            # TODO
+            pass
+        return driver
+
     @staticmethod
     def default_chrome_options(options: ChromiumOptions = None, debugger=False):
         if debugger:
@@ -42,8 +54,8 @@ class DriverConfig:
 
     def chrome_driver_config(self, debugger=None):
         options = webdriver.ChromeOptions()
-        driver_json_path = os.path.join(get_current_project_path(), 'selenium', 'chromedriver', '.wdm', 'drivers.json')
         try:
+            driver_json_path = os.path.join(get_current_project_path(), 'selenium', 'chromedriver', '.wdm', 'drivers.json')
             with open(driver_json_path, encoding='uft-8') as a:
                 result = json.load(a)
                 for key in result.keys():
